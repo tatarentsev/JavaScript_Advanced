@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button class="goOrder">Заказать</button>
+    <!-- <button class="checkYourOrder">Отследить заказ</button> -->
+    <button class="allOrders">Список заказов</button>
+
+    <script>
+        const cooks = new Map();
+        const dishes = new Map();
+        const orders = new Map();
+        const buttonElement = document.querySelector('.goOrder');
+        // const checkYourOrderEl = document.querySelector('.checkYourOrder');
+        const bodyElement = document.querySelector('body');
+        const allOrders = document.querySelector('.allOrders');
+        const temp = 0;
+
+        cooks.set('Виктор', 'Пицца')
+            .set('Ольга', 'Суши')
+            .set('Дмитрий', 'Десерты');
+
+        dishes.set('Пицца "Маргарита"', 'Виктор')
+            .set('Пицца "Пепперони"', 'Виктор')
+            .set('Суши "Филадельфия"', 'Ольга')
+            .set('Суши "Маргарита"', 'Ольга')
+            .set('Тирамису', 'Дмитрий')
+            .set('Чизкейк', 'Дмитрий');
+           
+            
+        let orderString = '';
+        
+        buttonElement.addEventListener('click', function (e) {
+            const tempName = prompt('Введите ваше имя:');
+            const tempOrder = entryYourOrder();
+            orders.set(tempName, tempOrder);
+            console.log(`Клиент ${tempName} заказал: ${tempOrder}`);
+            orderString = '';
+        });
+
+        function entryYourOrder() {
+            const orderEl = prompt('Введите ваш заказ: ');
+            const cofirmEl = confirm('Это все?');
+            if (orderString === '') {
+                orderString += orderEl;
+            } else {
+                orderString += ` и ${orderEl}`;
+            }
+
+            if (cofirmEl) {
+                return orderString;
+            } else {
+                return entryYourOrder();
+            }
+        }
+
+        // checkYourOrderEl.addEventListener('click', checkYourOrder);
+
+        let tempElement = 0;
+        const arrEl = Array.from(dishes.keys());
+        bodyElement.insertAdjacentHTML("beforeend", `
+            <select name="" id="dishesChoose">
+                <option value="">Выберите блюдо которое хотите отследить...</option>
+                <option value="pizza__margarita">${arrEl[tempElement++]}</option>
+                <option value="pizza__pepperoni">${arrEl[tempElement++]}</option>
+                <option value="sushi__filadelfia">${arrEl[tempElement++]}</option>
+                <option value="pizza__california">${arrEl[tempElement++]}</option>
+                <option value="tiramisu">${arrEl[tempElement++]}</option>
+                <option value="chiscake">${arrEl[tempElement++]}</option>
+            </select>
+        `);
+
+        let textEl = '';
+        const selectElement = document.querySelector('select');
+        selectElement.addEventListener('change', function (e) {
+            const select = this;
+            const [ option ] = select.selectedOptions;
+            textEl = option.text;
+            checkYourOrder();
+        });
+        
+        function checkYourOrder() {
+            for (const elem of dishes.keys()) {
+                if (textEl === elem) {
+                    console.log(dishes.get(elem));
+                    const newElem = document.createElement('h4');
+                    newElem.textContent = `Ваше блюдо - ${textEl}, готовит повар - ${dishes.get(elem)}`;
+                    bodyElement.append(newElem);
+                }
+            }
+        }
+
+        allOrders.addEventListener('click', function (e) {
+            for (const order of orders.keys()) {
+                const orderElement = document.createElement('p');
+                orderElement.textContent = `Клиент ${order} заказал: ${orders.get(order)}.`;
+                bodyElement.append(orderElement);
+            }
+        });
+    </script>
+</body>
+</html>
