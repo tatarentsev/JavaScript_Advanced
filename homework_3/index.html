@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .products {
+            display: flex;
+            gap: 3rem;
+            justify-content: center;
+        }
+
+        .product {
+            display: grid;
+        }
+
+        p {
+            display: grid;
+            justify-content: center;
+        }
+
+        .add_review {
+            padding: 15px;
+            border: 0;
+            border-radius: 5px;
+            background-color: aquamarine;
+        }
+
+        h1 {
+            display: grid;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="products">
+        <div class="product">
+            <p data-id="1">Name 1</p>
+            <button class="add_review">Добавить отзыв</button>
+            <ul class="listProduct" data-id="1">
+                <h1>Отзывы</h1>
+            </ul>
+        </div>
+        <div class="product">
+            <p data-id="2">Name 2</p>
+            <button class="add_review">Добавить отзыв</button>
+            <ul class="listProduct" data-id="2">
+                <h1>Отзывы</h1>
+            </ul>
+        </div>
+        <div class="product">
+            <p data-id="3">Name 3</p>
+            <button class="add_review">Добавить отзыв</button>
+            <ul class="listProduct" data-id="3">
+                <h1>Отзывы</h1>
+            </ul>
+        </div>
+        <div class="product">
+            <p data-id="4">Name 4</p>
+            <button class="add_review">Добавить отзыв</button>
+            <ul class="listProduct" data-id="4">
+                <h1>Отзывы</h1>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        const addReviewButton = document.querySelectorAll('.add_review');
+        const ulElement = document.querySelectorAll('.listProduct');
+
+        if (!localStorage.getItem('reviews')) {
+            localStorage.setItem('reviews', '[]');
+        }
+
+        // get arr from localstorage
+        const prodArray = JSON.parse(localStorage.getItem('reviews'));
+        
+        // for (let i = 0; i < 1; i++) {
+        // for (const pr of prodArray) {
+            // let temp = prodArray[i];
+            // console.log(prodArray);
+            if (ulElement.length > 0) {
+                document.querySelectorAll('p').forEach(element => {
+                    for (const pr of prodArray) {
+                        if (pr.name != undefined && pr.name === element.textContent) {
+                            console.log(`${pr.name} === ${element.textContent}`);
+                            pr.arr.forEach(product => {
+                                const liElement = document.createElement('li');
+                                liElement.textContent = product;
+                                liElement.classList.add('li');
+                                // ulElement.append(product);
+                                console.log(product);
+                                ulElement.forEach(el => {
+                                    ulElement.forEach(temp => {
+                                        if (el.previousElementSibling.previousElementSibling.textContent === pr.name && el) {
+                                            el.append(liElement);
+                                        }
+                                    });
+                                    
+                                });
+                            });
+                        }
+                    }
+                });
+            }
+        
+        // }
+        // }
+
+        
+
+        document.querySelectorAll('p').forEach(element => {
+            prodArray.push({ id: element.dataset.id, name: element.textContent, arr: [] });
+        });
+
+        addReviewButton.forEach(element => {
+            element.addEventListener('click', function (e) {
+                const target = e.target;
+                const liElement = document.createElement('li');
+                liElement.textContent = prompt('Введите ваш отзыв: ');
+                ulElement.forEach(el => {
+                    if (target.nextElementSibling.classList.contains('listProduct')) {
+                        target.nextElementSibling.append(liElement);
+                    };
+                });
+
+                prodArray.forEach(prod => {
+                    if (prod.id === target.previousElementSibling.dataset.id) {
+                        prodArray.push(prod.arr.push(liElement.textContent));
+                    }
+                });
+                localStorage.setItem('reviews', JSON.stringify(prodArray));
+            });
+        });
+
+
+
+    </script>
+</body>
+
+</html>
